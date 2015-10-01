@@ -23,7 +23,6 @@ func main() {
 	pflag.Parse()
 
 	glog.Info("=== Temperature-go ===")
-	glog.Info(time.Now())
 
 	srv := service.New(serviceConfig(), serviceDeps())
 
@@ -43,7 +42,7 @@ func main() {
 }
 
 func init() {
-	pflag.DurationVar(&config.TickerTime, "ticker-time", 10*time.Minute, "Ticker time.")
+	pflag.DurationVar(&config.TickerTime, "ticker-time", 15*time.Minute, "Ticker time.")
 	pflag.IntVar(&config.InfluxPort, "influx-port", 8086, "InfluxDB Port")
 	pflag.StringVar(&config.InfluxHost, "influx-host", "localhost", "InfluxDB Port")
 	pflag.StringVar(&config.InfluxUser, "influx-user", "", "InfluxDB User")

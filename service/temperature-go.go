@@ -1,7 +1,7 @@
 package service
 
 import (
-	"time"
+	// "time"
 
 	"github.com/d2r2/go-dht"
 	"github.com/golang/glog"
@@ -27,8 +27,8 @@ func measure(srv *Service) sensorData {
 }
 
 func writeData(s sensorData, srv *Service) {
-
-	glog.Infof("Temperature: %v°C | Humidity: %v%", s.temperature, s.humidity)
+	// now := time.Now()
+	glog.Infof("Temperature: %v°C | Humidity: %v%%", s.temperature, s.humidity)
 	if srv.Config.DryRun {
 		return
 	}
@@ -44,7 +44,7 @@ func writeData(s sensorData, srv *Service) {
 		Fields: map[string]interface{}{
 			"value": s.temperature,
 		},
-		Time:      time.Now(),
+		// Time:      now,
 		Precision: "s",
 	}
 	pts[1] = client.Point{
@@ -55,7 +55,7 @@ func writeData(s sensorData, srv *Service) {
 		Fields: map[string]interface{}{
 			"value": s.humidity,
 		},
-		Time:      time.Now(),
+		// Time:      now,
 		Precision: "s",
 	}
 

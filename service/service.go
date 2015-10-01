@@ -4,6 +4,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/golang/glog"
 	"github.com/influxdb/influxdb/client"
 )
 
@@ -14,6 +15,7 @@ type Config struct {
 	InfluxDB       string
 	InfluxUser     string
 	InfluxPassword string
+	InfluxHost     string
 }
 
 type Deps struct {
@@ -23,7 +25,7 @@ type Deps struct {
 type Service struct {
 	Config
 	Deps
-	ticker     time.Ticker
+	ticker     *time.Ticker
 	shutdownWG sync.WaitGroup
 }
 

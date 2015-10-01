@@ -1,6 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"net/url"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/golang/glog"
 	"github.com/influxdb/influxdb/client"
 	"github.com/ogier/pflag"
 
@@ -12,6 +20,11 @@ var (
 )
 
 func main() {
+	pflag.Parse()
+
+	glog.Info("=== Temperature-go ===")
+	glog.Info(time.Now())
+
 	srv := service.New(serviceConfig(), serviceDeps())
 
 	if srv.DryRun {
@@ -21,7 +34,7 @@ func main() {
 	go srv.Serve()
 
 	ch := make(chan os.Signal)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(ch, syscall.SIGINT)
 	<-ch
 
 	glog.Info("Received termination signal. Closing ...")
@@ -30,10 +43,11 @@ func main() {
 }
 
 func init() {
-	pflag.DurationVar(&config.TickerTime, "ticker-time", 10*time.Minutes, "Ticker time.")
+	pflag.DurationVar(&config.TickerTime, "ticker-time", 10*time.Minute, "Ticker time.")
 	pflag.IntVar(&config.InfluxPort, "influx-port", 8086, "InfluxDB Port")
 	pflag.StringVar(&config.InfluxHost, "influx-host", "localhost", "InfluxDB Port")
 	pflag.StringVar(&config.InfluxUser, "influx-user", "", "InfluxDB User")
+	pflag.StringVar(&config.InfluxDB, "influx-db", "", "InfluxDB Database")
 	pflag.StringVar(&config.InfluxPassword, "influx-password", "", "InfluxDB Password")
 	pflag.BoolVar(&config.DryRun, "dry-run", true, "Write to STDOUT instead of InfluxDB")
 
@@ -50,19 +64,19 @@ func serviceConfig() service.Config {
 	return config
 }
 
-func influx() (client.Client, error) {
+func influx() client.Client {
 	host, err := url.Parse(fmt.Sprintf("http://%s:%d", config.InfluxHost, config.InfluxPort))
 	if err != nil {
-		log.Fatal(err)
+		glog.Fatal(err)
 	}
 	influxConfig := client.Config{
 		URL:      *host,
 		Username: config.InfluxUser,
 		Password: config.InfluxPassword,
 	}
-	con, err := client.NewClient(conf)
+	influxClient, err := client.NewClient(influxConfig)
 	if err != nil {
-		log.Fatal(err)
+		glog.Fatal(err)
 	}
-	return con
+	return *influxClient
 }

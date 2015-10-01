@@ -1,7 +1,10 @@
 package service
 
 import (
+	"time"
+
 	"github.com/d2r2/go-dht"
+	"github.com/golang/glog"
 	"github.com/influxdb/influxdb/client"
 )
 
@@ -12,7 +15,7 @@ type sensorData struct {
 
 func measure(srv *Service) sensorData {
 	// TODO: add ReadDHT parameters to config
-	temp, hum, _, err := ReadDHTxxWithRetry(dht.DHT22, 4, true, 15)
+	temp, hum, _, err := dht.ReadDHTxxWithRetry(dht.DHT22, 4, true, 15)
 	if err != nil {
 		glog.Fatal(err)
 	}
@@ -24,8 +27,13 @@ func measure(srv *Service) sensorData {
 }
 
 func writeData(s sensorData, srv *Service) {
+
+	glog.Infof("Temperature: %v°C | Humidity: %v%", s.temperature, s.humidity)
+	if srv.Config.DryRun {
+		return
+	}
 	sensorDataTypes := 2
-	pts = make([]client.Point, sensorDataTypes)
+	var pts = make([]client.Point, sensorDataTypes)
 
 	// TODO: make tags configurable
 	pts[0] = client.Point{
@@ -57,6 +65,6 @@ func writeData(s sensorData, srv *Service) {
 	}
 	_, err := srv.InfluxClient.Write(bps)
 	if err != nil {
-		log.Fatal(err)
+		glog.Fatal(err)
 	}
 }

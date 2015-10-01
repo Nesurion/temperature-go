@@ -15,7 +15,15 @@ type sensorData struct {
 
 func measure(srv *Service) sensorData {
 	// TODO: add ReadDHT parameters to config
-	temp, hum, _, err := dht.ReadDHTxxWithRetry(dht.DHT22, 4, true, 15)
+	var sensorType dht.SensorType
+	switch srv.Config.DhtType {
+	case "DHT22":
+		sensorType = dht.DHT22
+	case "DHT11":
+		sensorType = dht.DHT11
+	}
+
+	temp, hum, _, err := dht.ReadDHTxxWithRetry(sensorType, srv.Config.DhtPin, srv.Config.DHTPerf, srv.Config.DhtRetries)
 	if err != nil {
 		glog.Fatal(err)
 	}

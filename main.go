@@ -43,12 +43,18 @@ func main() {
 
 func init() {
 	pflag.DurationVar(&config.TickerTime, "ticker-time", 15*time.Minute, "Ticker time.")
+	pflag.BoolVar(&config.DryRun, "dry-run", true, "Write to STDOUT instead of InfluxDB")
+
 	pflag.IntVar(&config.InfluxPort, "influx-port", 8086, "InfluxDB Port")
 	pflag.StringVar(&config.InfluxHost, "influx-host", "localhost", "InfluxDB Port")
 	pflag.StringVar(&config.InfluxUser, "influx-user", "", "InfluxDB User")
 	pflag.StringVar(&config.InfluxDB, "influx-db", "", "InfluxDB Database")
 	pflag.StringVar(&config.InfluxPassword, "influx-password", "", "InfluxDB Password")
-	pflag.BoolVar(&config.DryRun, "dry-run", true, "Write to STDOUT instead of InfluxDB")
+
+	pflag.StringVar(&config.DhtType, "dht-type", "DHT22", "DHT Type (DHT11, DHT22)")
+	pflag.IntVar(&config.DhtPin, "dht-pin", 4, "Pin Number DHT Data is connected to")
+	pflag.BoolVar(&config.DHTPerf, "dht-perf", false, "Run DHT read in Boost Performance Mode - true will result in needing sudo")
+	pflag.IntVar(&config.DhtRetries, "dht-retries", 15, "Number of reading data retries")
 
 }
 

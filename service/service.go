@@ -16,6 +16,10 @@ type Config struct {
 	InfluxUser     string
 	InfluxPassword string
 	InfluxHost     string
+	DhtType        string
+	DhtPin         int
+	DHTPerf        bool
+	DhtRetries     int
 }
 
 type Deps struct {

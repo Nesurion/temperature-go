@@ -9,17 +9,19 @@ import (
 )
 
 type Config struct {
-	TickerTime     time.Duration
-	DryRun         bool
-	InfluxPort     int
-	InfluxDB       string
-	InfluxUser     string
-	InfluxPassword string
-	InfluxHost     string
-	DhtType        string
-	DhtPin         int
-	DHTPerf        bool
-	DhtRetries     int
+	TickerTime      time.Duration
+	DryRun          bool
+	OWMcityID       int
+	InfluxPort      int
+	InfluxDB        string
+	InfluxUser      string
+	InfluxPassword  string
+	InfluxHost      string
+	InfluxRetention string
+	DhtType         string
+	DhtPin          int
+	DHTPerf         bool
+	DhtRetries      int
 }
 
 type Deps struct {
@@ -58,6 +60,7 @@ func (srv *Service) Reconcile() {
 	srv.shutdownWG.Add(1)
 	defer srv.shutdownWG.Done()
 	// get temp/humid data and write to influx
-	s := measure(srv)
-	writeData(s, srv)
+	si := measure(srv)
+	so := outside(srv)
+	writeData(si, so, srv)
 }

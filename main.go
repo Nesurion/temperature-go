@@ -44,12 +44,14 @@ func main() {
 func init() {
 	pflag.DurationVar(&config.TickerTime, "ticker-time", 15*time.Minute, "Ticker time.")
 	pflag.BoolVar(&config.DryRun, "dry-run", true, "Write to STDOUT instead of InfluxDB")
+	pflag.IntVar(&config.OWMcityID, "owm-city-id", 0, "Open Weather Map city ID")
 
 	pflag.IntVar(&config.InfluxPort, "influx-port", 8086, "InfluxDB Port")
 	pflag.StringVar(&config.InfluxHost, "influx-host", "localhost", "InfluxDB Port")
 	pflag.StringVar(&config.InfluxUser, "influx-user", "", "InfluxDB User")
 	pflag.StringVar(&config.InfluxDB, "influx-db", "", "InfluxDB Database")
 	pflag.StringVar(&config.InfluxPassword, "influx-password", "", "InfluxDB Password")
+	pflag.StringVar(&config.InfluxRetention, "influx-retention", "default", "InfluxDB Retention")
 
 	pflag.StringVar(&config.DhtType, "dht-type", "DHT22", "DHT Type (DHT11, DHT22)")
 	pflag.IntVar(&config.DhtPin, "dht-pin", 4, "Pin Number DHT Data is connected to")

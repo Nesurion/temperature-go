@@ -25,7 +25,7 @@ func measure(srv *Service) sensorData {
 
 	temp, hum, _, err := dht.ReadDHTxxWithRetry(sensorType, srv.Config.DhtPin, srv.Config.DHTPerf, srv.Config.DhtRetries)
 	if err != nil {
-		glog.Fatal(err)
+		glog.Info(err)
 	}
 	s := sensorData{
 		temperature: temp,
@@ -73,6 +73,6 @@ func writeData(s sensorData, srv *Service) {
 	}
 	_, err := srv.InfluxClient.Write(bps)
 	if err != nil {
-		glog.Fatal(err)
+		glog.Info(err)
 	}
 }
